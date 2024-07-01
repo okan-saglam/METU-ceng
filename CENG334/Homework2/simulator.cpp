@@ -1,8 +1,6 @@
 #include <iostream>
-// #include <stdlib.h>
 #include <vector>
 #include <queue>
-// #include <pthread.h>
 #include "monitor.h"
 #include "helper.c"
 #include "WriteOutput.c"
@@ -117,14 +115,6 @@ class NarrowBridge: public Connectors{
                 }
             }
             else if(waitingCars[to].size() && !number_of_car_onBridge){
-                // cout << findTimeDifference(now) << endl;
-                // if(!number_of_car_onBridge){
-                //     now = GetTimestamp();
-                //     overtime = false;
-                //     current_direction = to;
-                //     direction_changed = true;
-                //     waitingToPass[to].notifyAll();
-                // }
                 if(findTimeDifference(now) >= this->max_wait_time){
                     now = GetTimestamp();
                     overtime = false;
@@ -135,8 +125,6 @@ class NarrowBridge: public Connectors{
             }
             else{
                 waitingToPass[from].notifyAll();
-                // Buraya now = GetTimestamp(); gelebilir
-                // now = GetTimestamp();
             }
         }
 };
@@ -194,106 +182,6 @@ class Ferrie: public Connectors{
             sleep_milli(this->travel_time);
             mutex.lock();
             WriteOutput(current_car_id, 'F', this->id, FINISH_PASSING);
-
-
-
-
-
-
-            // if(emptyFlag[from]){
-            //     // cout << "here" << endl;
-
-            //     waitingToPass[from].wait();
-            // }
-
-            // number_of_car_onBoat[from]++;
-            // if(number_of_car_onBoat[from] == 1){
-            //     emptyFlag[from] = 0;
-            //     timespec mwt;
-            //     clock_gettime(CLOCK_REALTIME, &mwt);
-            //     mwt.tv_sec = mwt.tv_sec + max_wait_time / 1000;
-            //     mwt.tv_nsec = mwt.tv_nsec + (max_wait_time % 1000) * 1000000;
-            //     if(mwt.tv_nsec >= 1000000000){
-            //         mwt.tv_sec++;
-            //         mwt.tv_nsec -= 1000000000;
-            //     }
-
-            //     // if(waitingToPass[from].timedwait(&mwt) == ETIMEDOUT) isMaxTime = true;
-            //     waitingToPass[from].timedwait(&mwt);
-            //     isMaxTime = true;
-            // }
-                
-            // if(number_of_car_onBoat[from] != capacity && !isMaxTime){
-            //     waitingToPass[from].wait();
-            // }
-            // else if(number_of_car_onBoat[from] != capacity && isMaxTime){
-            //     waitingToPass[from].notifyAll();
-            //     isMaxTime = false;
-            // }
-            // else if(number_of_car_onBoat[from] == capacity){
-            //     emptyFlag[from] = 1;
-            //     waitingToPass[from].notifyAll();
-            // } 
-            // // else{
-            // //     waitingToPass[from].wait();
-            // // }
-            
-
-            // // else waitingToPass[from].notifyAll();
-
-            // number_of_car_onBoat[from]--;
-            // // cout << number_of_car_onBoat[from] << endl;
-            // if(!number_of_car_onBoat[from]){
-            //     emptyFlag[from] = 0;
-            //     waitingToPass[from].notifyAll();
-            // }
-            
-            // WriteOutput(current_car_id, 'F', this->id, START_PASSING);
-            // mutex.unlock();
-            // sleep_milli(this->travel_time);
-            // mutex.lock();
-            // WriteOutput(current_car_id, 'F', this->id, FINISH_PASSING);
-
-// ---------------------------------------------------------------------------
-
-            // number_of_car_onBoat[from]++;
-            // temp[from]++;
-
-            // if(number_of_car_onBoat[from] == 1){
-            //     timespec mwt;
-            //     clock_gettime(CLOCK_REALTIME, &mwt);
-            //     mwt.tv_sec = mwt.tv_sec + max_wait_time / 1000;
-            //     mwt.tv_nsec = mwt.tv_nsec + (max_wait_time % 1000) * 1000000;
-            //     if(mwt.tv_nsec >= 1000000000){
-            //         mwt.tv_sec++;
-            //         mwt.tv_nsec -= 1000000000;
-            //     }
-
-            //     if(waitingToPass[from].timedwait(&mwt) == ETIMEDOUT) isMaxTime = true;
-            // }
-            // while(1){
-            //     if(number_of_car_onBoat[from] == capacity && !isMaxTime){
-            //         WriteOutput(current_car_id, 'F', this->id, START_PASSING);
-            //         waitingToPass[from].notifyAll();
-            //         mutex.unlock();
-            //         sleep_milli(this->travel_time);
-            //         mutex.lock();
-            //         WriteOutput(current_car_id, 'F', this->id, FINISH_PASSING);
-            //         break;
-            //     }
-            //     else if(isMaxTime){
-            //         waitingToPass[from].notifyAll();
-            //         isMaxTime = false;
-            //     }
-            //     else{
-            //         waitingToPass[from].wait();
-            //     }
-            // }
-            // temp[from]--;
-            // cout << temp[from] << endl;
-            // if(temp[from] == 0){
-            //     number_of_car_onBoat[from] = 0;
-            // }
         }
 };
 
@@ -354,8 +242,6 @@ class CrossRoad: public Connectors{
             WriteOutput(current_car_id, 'C', this->id, FINISH_PASSING);
             number_of_car_onRoad--;
 
-// && findTimeDifference(now) < max_wait_time
-
             if(waitingCars[from].empty() && !number_of_car_onRoad){
                 int count=0;
                 for(int i=from+1 ; ; i++){
@@ -379,7 +265,6 @@ class CrossRoad: public Connectors{
             else if(waitingCars[from].size() && findTimeDifference(now) < max_wait_time){
                 waitingToPass[from].notifyAll();
             }
-            // waitingCars[from].size() &&
             else if(findTimeDifference(now) >= this->max_wait_time && !number_of_car_onRoad){
                 int temp = current_direction;
                 int count = 0;
@@ -410,22 +295,10 @@ class CrossRoad: public Connectors{
 
 // GLOBALS
 
-// vector<NarrowBridge*> nbs;
-// vector<Ferrie*> fs;
-// vector<CrossRoad*> crs;
-// vector<Car> cars;
-
-// vector<NarrowBridge> nbs;
-// vector<Ferrie> fs;
-// vector<CrossRoad> crs;
-// vector<Car> cars;
-
 NarrowBridge nbs[100];
 Ferrie fs[100];
 CrossRoad crs[100];
 Car cars[1000];
-
-
 
 // HELPERS
 
@@ -460,8 +333,6 @@ void* passFromConnector(void* args){
         if(connector_type[i] == "N"){
             WriteOutput(my_car->id, 'N', connector_id[i], TRAVEL);
             sleep_milli(my_car->travel_time_between_connectors);
-            // WriteOutput(my_car->id, 'N', connector_id[i], ARRIVE);
-
             nbs[connector_id[i]].pass(my_car->id, current_car_direction);
 
         }
@@ -474,8 +345,6 @@ void* passFromConnector(void* args){
         else{
             WriteOutput(my_car->id, 'C', connector_id[i], TRAVEL);
             sleep_milli(my_car->travel_time_between_connectors);
-            // WriteOutput(my_car->id, 'C', connector_id[i], ARRIVE);
-
             crs[connector_id[i]].pass(my_car->id, current_car_direction);
 
         }
@@ -494,16 +363,7 @@ int main(){
     // TAKING THE INPUT:
 
     cin >> number_of_nb;
-    // cout << number_of_nb;
-    // nbs = (NarrowBridge*) malloc(number_of_nb * sizeof(NarrowBridge));
     for(i=0 ; i<number_of_nb ; i++){
-        // NarrowBridge element;
-        // element.id = i;
-        // cin >> element.travel_time;
-        // cin >> element.max_wait_time;
-        // nbs.push_back(element);
-        // nbs[i] = element;
-
         nbs[i].id = i;
         cin >> nbs[i].travel_time;
         cin >> nbs[i].max_wait_time;
@@ -511,16 +371,7 @@ int main(){
     }
 
     cin >> number_of_f;
-    // fs = (Ferrie*) malloc(number_of_f * sizeof(Ferrie));
     for(i=0 ; i<number_of_f ; i++){
-        // Ferrie element;
-        // element.id = i;
-        // cin >> element.travel_time;
-        // cin >> element.max_wait_time;
-        // cin >> element.capacity;
-        // fs.push_back(element);
-        // fs[i] = element;
-
         fs[i].id = i;
         cin >> fs[i].travel_time;
         cin >> fs[i].max_wait_time;
@@ -528,48 +379,23 @@ int main(){
     }
 
     cin >> number_of_cr;
-    // crs = (CrossRoad*) malloc(number_of_cr * sizeof(CrossRoad));
     for(i=0 ; i<number_of_cr ; i++){
-        // CrossRoad element;
-        // element.id = i;
-        // cin >> element.travel_time;
-        // cin >> element.max_wait_time;
-        // crs.push_back(element);
-        // crs[i] = element;
-
         crs[i].id = i;
         cin >> crs[i].travel_time;
         cin >> crs[i].max_wait_time;
     }
     
     cin >> number_of_cars;
-    // Car cars[number_of_cars];
     for(i=0 ; i<number_of_cars ; i++){
         int j;
-        // Car element;
-        // element.id = i;
-        // cin >> element.travel_time_between_connectors;
-        // cin >> element.path_length;
-
         cars[i].id = i;
         cin >> cars[i].travel_time_between_connectors;
         cin >> cars[i].path_length;
-
-        // element.path = (PathElement*) malloc((element.path_length) * sizeof(PathElement));
         for(j=0 ; j<cars[i].path_length ; j++){
-            // PathElement path_element;
-            // cin >> path_element.connector;
-            // cin >> path_element.from;
-            // cin >> path_element.to;
-
             cin >> cars[i].path[j].connector;
             cin >> cars[i].path[j].from;
             cin >> cars[i].path[j].to;
-
-            // cars[i].path.push_back(path_element);
         }
-        // cars.push_back(element);
-        // cars[i] = element;
     }
 
     // PRINTING THE INPUT:
